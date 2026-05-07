@@ -4,7 +4,9 @@ import edu.hei.school.agricultural.controller.dto.CollectivityActivity;
 import edu.hei.school.agricultural.controller.dto.CreateCollectivityActivity;
 import edu.hei.school.agricultural.exception.BadRequestException;
 import edu.hei.school.agricultural.exception.NotFoundException;
+import edu.hei.school.agricultural.security.ApiKeyValidator;
 import edu.hei.school.agricultural.service.ActivityService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +20,11 @@ import static org.springframework.http.HttpStatus.*;
 @RequiredArgsConstructor
 public class ActivityController {
     private final ActivityService activityService;
+    private final ApiKeyValidator apiKeyValidator;
 
     @GetMapping("/collectivities/{id}/activities")
-    public ResponseEntity<?> getActivities(@PathVariable String id) {
+    public ResponseEntity<?> getActivities(@PathVariable String id, HttpServletRequest request) {
+//        apiKeyValidator.validate(request);
         try {
             return ResponseEntity.status(OK).body(activityService.getActivities(id));
         } catch (NotFoundException e) {
@@ -31,7 +35,10 @@ public class ActivityController {
     }
 
     @PostMapping("/collectivities/{id}/activities")
-    public ResponseEntity<?> addActivities(@PathVariable String id, @RequestBody List<CreateCollectivityActivity> activities) {
+    public ResponseEntity<?> addActivities(@PathVariable String id,
+                                           @RequestBody List<CreateCollectivityActivity> activities,
+                                           HttpServletRequest request) {
+//        apiKeyValidator.validate(request);
         try {
             return ResponseEntity.status(OK).body(activityService.addActivities(id, activities));
         } catch (BadRequestException e) {
