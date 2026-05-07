@@ -182,25 +182,26 @@ public class MemberRepository {
     public Double getUnpaidAmountByMemberBetweenDates(String memberId, LocalDate from, LocalDate to) {
         String sql = """
             SELECT COALESCE((
-                SELECT SUM(mf.amount)
-                FROM membership_fee mf
-                JOIN collectivity_membership_fee cmf ON mf.id = cmf.membership_fee_id
-                JOIN collectivity_member cm ON cmf.collectivity_id = cm.collectivity_id
-                WHERE cm.member_id = ?
-                AND mf.eligible_from <= ?
+                SELECT SUM(mfi.amount)
+                FROM membership_fee_installment mfi
+                JOIN membership_fee mf ON mfi.membership_fee_id = mf.id
+                WHERE mfi.member_id = ?
+                    AND mf.status = 'ACTIVE'
+                    AND mfi.due_date BETWEEN ? AND ?
             ), 0) - COALESCE((
                 SELECT SUM(mp.amount)
                 FROM member_payment mp
                 WHERE mp.member_id = ?
-                AND mp.creation_date BETWEEN ? AND ?
+                    AND mp.creation_date BETWEEN ? AND ?
             ), 0)
             """;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, memberId);
-            ps.setDate(2, java.sql.Date.valueOf(to));
-            ps.setString(3, memberId);
-            ps.setDate(4, java.sql.Date.valueOf(from));
-            ps.setDate(5, java.sql.Date.valueOf(to));
+            ps.setDate(2, java.sql.Date.valueOf(from));
+            ps.setDate(3, java.sql.Date.valueOf(to));
+            ps.setString(4, memberId);
+            ps.setDate(5, java.sql.Date.valueOf(from));
+            ps.setDate(6, java.sql.Date.valueOf(to));
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return Math.max(rs.getDouble(1), 0);
@@ -239,24 +240,22 @@ public class MemberRepository {
             FROM collectivity_member cm
             WHERE NOT EXISTS (
                 SELECT 1
-                FROM collectivity_membership_fee cmf
-                JOIN membership_fee mf ON cmf.membership_fee_id = mf.id
-                WHERE cmf.collectivity_id = cm.collectivity_id
+                FROM membership_fee_installment mfi
+                JOIN membership_fee mf ON mfi.membership_fee_id = mf.id
+                WHERE mfi.member_id = cm.member_id
                     AND mf.status = 'ACTIVE'
-                    AND mf.eligible_from <= ?
+                    AND mfi.due_date <= ?
                     AND NOT EXISTS (
                         SELECT 1
                         FROM member_payment mp
                         WHERE mp.member_id = cm.member_id
-                            AND mp.membership_fee_id = mf.id
-                            AND mp.creation_date <= ?
+                            AND mp.creation_date <= mfi.due_date
                     )
             )
             """;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setDate(1, java.sql.Date.valueOf(to));
-            ps.setDate(2, java.sql.Date.valueOf(to));
-            ps.setString(3, collectivityId);
+            ps.setString(2, collectivityId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
