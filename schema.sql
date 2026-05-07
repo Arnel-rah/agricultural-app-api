@@ -350,3 +350,26 @@ FROM activity a
          LEFT JOIN activity_member_attendance ama ON a.id = ama.activity_id
 GROUP BY a.id, a.label
 ORDER BY a.executive_date;
+
+
+-- Ajouter la colonne due_date
+ALTER TABLE membership_fee ADD COLUMN IF NOT EXISTS due_date DATE;
+
+-- Mettre à jour avec eligible_from par défaut
+UPDATE membership_fee SET due_date = eligible_from WHERE due_date IS NULL;
+
+
+-- Table des échéances de cotisations
+CREATE TABLE IF NOT EXISTS membership_fee_installment (
+                                                          id                 VARCHAR PRIMARY KEY,
+                                                          membership_fee_id  VARCHAR REFERENCES membership_fee(id),
+                                                          member_id          VARCHAR REFERENCES member(id),
+                                                          due_date           DATE NOT NULL,
+                                                          amount             DECIMAL NOT NULL,
+                                                          status             VARCHAR DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'PAID', 'OVERDUE')),
+                                                          created_at         DATE DEFAULT CURRENT_DATE
+);
+
+-- Index pour optimiser les recherches
+CREATE INDEX IF NOT EXISTS idx_installment_member_due ON membership_fee_installment(member_id, due_date);
+CREATE INDEX IF NOT EXISTS idx_installment_membership_fee ON membership_fee_installment(membership_fee_id);
