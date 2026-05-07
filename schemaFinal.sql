@@ -390,3 +390,251 @@ CREATE INDEX IF NOT EXISTS idx_collectivity_activity_collectivity ON collectivit
 CREATE INDEX IF NOT EXISTS idx_collectivity_activity_activity ON collectivity_activity(activity_id);
 CREATE INDEX IF NOT EXISTS idx_attendance_activity ON activity_member_attendance(activity_id);
 CREATE INDEX IF NOT EXISTS idx_attendance_member ON activity_member_attendance(member_id);
+
+
+-- Schema Bonus
+-- =====================================================
+-- INSERTION DES ACTIVITÉS (Bonus 1) - Version corrigée
+-- Données de test - 6 mai 2026
+-- =====================================================
+
+-- =====================================================
+-- 1. ACTIVITÉS COLLECTIVITÉ 1 (Tableau 21)
+-- =====================================================
+
+-- act-1: AG1 (MEETING) - 1er samedi de chaque mois
+INSERT INTO activity (id, label, activity_type, recurrence_rule_week_ordinal, recurrence_rule_day_of_week) VALUES
+    ('act-1', 'AG1', 'MEETING', 1, 'SA')
+ON CONFLICT (id) DO NOTHING;
+
+-- act-2: Formation de base (TRAINING) - 2ème dimanche de chaque mois
+INSERT INTO activity (id, label, activity_type, recurrence_rule_week_ordinal, recurrence_rule_day_of_week) VALUES
+    ('act-2', 'Formation de base', 'TRAINING', 2, 'SU')
+ON CONFLICT (id) DO NOTHING;
+
+-- Occupations concernées pour act-1 (tous les postes)
+INSERT INTO activity_member_occupation_concerned (id, activity_id, occupation) VALUES
+                                                                                   ('occ-1', 'act-1', 'JUNIOR'),
+                                                                                   ('occ-2', 'act-1', 'SENIOR'),
+                                                                                   ('occ-3', 'act-1', 'SECRETARY'),
+                                                                                   ('occ-4', 'act-1', 'TREASURER'),
+                                                                                   ('occ-5', 'act-1', 'VICE_PRESIDENT'),
+                                                                                   ('occ-6', 'act-1', 'PRESIDENT')
+ON CONFLICT (id) DO NOTHING;
+
+-- Occupations concernées pour act-2 (uniquement JUNIOR)
+INSERT INTO activity_member_occupation_concerned (id, activity_id, occupation) VALUES
+    ('occ-7', 'act-2', 'JUNIOR')
+ON CONFLICT (id) DO NOTHING;
+
+-- Lier activités à la collectivité 1
+INSERT INTO collectivity_activity (id, collectivity_id, activity_id) VALUES
+                                                                         ('ca-1', 'col-1', 'act-1'),
+                                                                         ('ca-2', 'col-1', 'act-2')
+ON CONFLICT (id) DO NOTHING;
+
+-- =====================================================
+-- 2. ACTIVITÉS COLLECTIVITÉ 2 (Tableau 22)
+-- =====================================================
+
+-- act-3: AG2 (MEETING) - 1er dimanche de chaque mois
+INSERT INTO activity (id, label, activity_type, recurrence_rule_week_ordinal, recurrence_rule_day_of_week) VALUES
+    ('act-3', 'AG2', 'MEETING', 1, 'SU')
+ON CONFLICT (id) DO NOTHING;
+
+-- act-4: Formation de base (TRAINING) - 3ème dimanche de chaque mois
+INSERT INTO activity (id, label, activity_type, recurrence_rule_week_ordinal, recurrence_rule_day_of_week) VALUES
+    ('act-4', 'Formation de base', 'TRAINING', 3, 'SU')
+ON CONFLICT (id) DO NOTHING;
+
+-- act-5: Perfectionnement (PUNCTUAL) - date fixe
+INSERT INTO activity (id, label, activity_type, executive_date) VALUES
+    ('act-5', 'Perfectionnement', 'OTHER', '2026-04-30')
+ON CONFLICT (id) DO NOTHING;
+
+-- Occupations concernées pour act-3 (tous les postes)
+INSERT INTO activity_member_occupation_concerned (id, activity_id, occupation) VALUES
+                                                                                   ('occ-8', 'act-3', 'JUNIOR'),
+                                                                                   ('occ-9', 'act-3', 'SENIOR'),
+                                                                                   ('occ-10', 'act-3', 'SECRETARY'),
+                                                                                   ('occ-11', 'act-3', 'TREASURER'),
+                                                                                   ('occ-12', 'act-3', 'VICE_PRESIDENT'),
+                                                                                   ('occ-13', 'act-3', 'PRESIDENT')
+ON CONFLICT (id) DO NOTHING;
+
+-- Occupations concernées pour act-4 (uniquement JUNIOR)
+INSERT INTO activity_member_occupation_concerned (id, activity_id, occupation) VALUES
+    ('occ-14', 'act-4', 'JUNIOR')
+ON CONFLICT (id) DO NOTHING;
+
+-- Occupations concernées pour act-5 (uniquement SENIOR)
+INSERT INTO activity_member_occupation_concerned (id, activity_id, occupation) VALUES
+    ('occ-15', 'act-5', 'SENIOR')
+ON CONFLICT (id) DO NOTHING;
+
+-- Lier activités à la collectivité 2
+INSERT INTO collectivity_activity (id, collectivity_id, activity_id) VALUES
+                                                                         ('ca-3', 'col-2', 'act-3'),
+                                                                         ('ca-4', 'col-2', 'act-4'),
+                                                                         ('ca-5', 'col-2', 'act-5')
+ON CONFLICT (id) DO NOTHING;
+
+-- =====================================================
+-- 3. ACTIVITÉS COLLECTIVITÉ 3 (Tableau 23)
+-- =====================================================
+
+-- act-6: AG3 (MEETING) - 1er vendredi de chaque mois
+INSERT INTO activity (id, label, activity_type, recurrence_rule_week_ordinal, recurrence_rule_day_of_week) VALUES
+    ('act-6', 'AG3', 'MEETING', 1, 'FR')
+ON CONFLICT (id) DO NOTHING;
+
+-- act-7: Formation de base (TRAINING) - 4ème mercredi de chaque mois
+INSERT INTO activity (id, label, activity_type, recurrence_rule_week_ordinal, recurrence_rule_day_of_week) VALUES
+    ('act-7', 'Formation de base', 'TRAINING', 4, 'WE')
+ON CONFLICT (id) DO NOTHING;
+
+-- Occupations concernées pour act-6 (tous les postes)
+INSERT INTO activity_member_occupation_concerned (id, activity_id, occupation) VALUES
+                                                                                   ('occ-16', 'act-6', 'JUNIOR'),
+                                                                                   ('occ-17', 'act-6', 'SENIOR'),
+                                                                                   ('occ-18', 'act-6', 'SECRETARY'),
+                                                                                   ('occ-19', 'act-6', 'TREASURER'),
+                                                                                   ('occ-20', 'act-6', 'VICE_PRESIDENT'),
+                                                                                   ('occ-21', 'act-6', 'PRESIDENT')
+ON CONFLICT (id) DO NOTHING;
+
+-- Occupations concernées pour act-7 (uniquement JUNIOR)
+INSERT INTO activity_member_occupation_concerned (id, activity_id, occupation) VALUES
+    ('occ-22', 'act-7', 'JUNIOR')
+ON CONFLICT (id) DO NOTHING;
+
+-- Lier activités à la collectivité 3
+INSERT INTO collectivity_activity (id, collectivity_id, activity_id) VALUES
+                                                                         ('ca-6', 'col-3', 'act-6'),
+                                                                         ('ca-7', 'col-3', 'act-7')
+ON CONFLICT (id) DO NOTHING;
+
+-- =====================================================
+-- 4. PRÉSENCES - COLLECTIVITÉ 1 (Tableaux 24 et 25)
+-- =====================================================
+
+-- Supprimer les anciennes présences pour act-1 avant d'insérer
+DELETE FROM activity_member_attendance WHERE activity_id = 'act-1';
+
+-- act-1: AG1 du 07/03/2026 (Tableau 24)
+INSERT INTO activity_member_attendance (id, activity_id, member_id, attendance_status) VALUES
+                                                                                           ('att-1', 'act-1', 'C1-M1', 'ATTENDED'),
+                                                                                           ('att-2', 'act-1', 'C1-M2', 'ATTENDED'),
+                                                                                           ('att-3', 'act-1', 'C1-M3', 'ATTENDED'),
+                                                                                           ('att-4', 'act-1', 'C1-M4', 'ATTENDED'),
+                                                                                           ('att-5', 'act-1', 'C1-M5', 'ATTENDED'),
+                                                                                           ('att-6', 'act-1', 'C1-M6', 'ATTENDED'),
+                                                                                           ('att-7', 'act-1', 'C1-M7', 'MISSING'),
+                                                                                           ('att-8', 'act-1', 'C1-M8', 'MISSING')
+ON CONFLICT (id) DO NOTHING;
+
+-- act-1: AG1 du 04/04/2026 (Tableau 25) - Mise à jour des statuts
+INSERT INTO activity_member_attendance (id, activity_id, member_id, attendance_status) VALUES
+                                                                                           ('att-9', 'act-1', 'C1-M1', 'ATTENDED'),
+                                                                                           ('att-10', 'act-1', 'C1-M2', 'ATTENDED'),
+                                                                                           ('att-11', 'act-1', 'C1-M3', 'MISSING'),
+                                                                                           ('att-12', 'act-1', 'C1-M4', 'MISSING'),
+                                                                                           ('att-13', 'act-1', 'C1-M5', 'ATTENDED'),
+                                                                                           ('att-14', 'act-1', 'C1-M6', 'ATTENDED'),
+                                                                                           ('att-15', 'act-1', 'C1-M7', 'ATTENDED'),
+                                                                                           ('att-16', 'act-1', 'C1-M8', 'ATTENDED')
+ON CONFLICT (activity_id, member_id) DO UPDATE SET attendance_status = EXCLUDED.attendance_status;
+
+-- =====================================================
+-- 5. PRÉSENCES - COLLECTIVITÉ 2 (Tableaux 26, 27, 28)
+-- =====================================================
+
+-- Supprimer les anciennes présences pour act-3 avant d'insérer
+DELETE FROM activity_member_attendance WHERE activity_id = 'act-3';
+
+-- act-3: AG2 du 08/03/2026 (Tableau 26)
+INSERT INTO activity_member_attendance (id, activity_id, member_id, attendance_status) VALUES
+                                                                                           ('att-17', 'act-3', 'C2-M1', 'ATTENDED'),
+                                                                                           ('att-18', 'act-3', 'C2-M2', 'ATTENDED'),
+                                                                                           ('att-19', 'act-3', 'C2-M3', 'MISSING'),
+                                                                                           ('att-20', 'act-3', 'C2-M4', 'MISSING'),
+                                                                                           ('att-21', 'act-3', 'C2-M5', 'ATTENDED'),
+                                                                                           ('att-22', 'act-3', 'C2-M6', 'ATTENDED'),
+                                                                                           ('att-23', 'act-3', 'C2-M7', 'ATTENDED'),
+                                                                                           ('att-24', 'act-3', 'C2-M8', 'ATTENDED')
+ON CONFLICT (id) DO NOTHING;
+
+-- act-3: AG2 du 05/04/2026 (Tableau 27)
+INSERT INTO activity_member_attendance (id, activity_id, member_id, attendance_status) VALUES
+                                                                                           ('att-25', 'act-3', 'C2-M1', 'ATTENDED'),
+                                                                                           ('att-26', 'act-3', 'C2-M2', 'ATTENDED'),
+                                                                                           ('att-27', 'act-3', 'C2-M3', 'MISSING'),
+                                                                                           ('att-28', 'act-3', 'C2-M4', 'ATTENDED'),
+                                                                                           ('att-29', 'act-3', 'C2-M5', 'ATTENDED'),
+                                                                                           ('att-30', 'act-3', 'C2-M6', 'ATTENDED'),
+                                                                                           ('att-31', 'act-3', 'C2-M7', 'ATTENDED'),
+                                                                                           ('att-32', 'act-3', 'C2-M8', 'MISSING')
+ON CONFLICT (activity_id, member_id) DO UPDATE SET attendance_status = EXCLUDED.attendance_status;
+
+-- act-5: Perfectionnement du 30/04/2026 (Tableau 28)
+INSERT INTO activity_member_attendance (id, activity_id, member_id, attendance_status) VALUES
+                                                                                           ('att-33', 'act-5', 'C2-M1', 'ATTENDED'),
+                                                                                           ('att-34', 'act-5', 'C2-M2', 'ATTENDED'),
+                                                                                           ('att-35', 'act-5', 'C2-M3', 'ATTENDED'),
+                                                                                           ('att-36', 'act-5', 'C2-M4', 'MISSING'),
+                                                                                           ('att-37', 'act-5', 'C2-M5', 'UNDEFINED'),
+                                                                                           ('att-38', 'act-5', 'C2-M6', 'UNDEFINED'),
+                                                                                           ('att-39', 'act-5', 'C2-M7', 'UNDEFINED'),
+                                                                                           ('att-40', 'act-5', 'C2-M8', 'UNDEFINED')
+ON CONFLICT (id) DO NOTHING;
+
+-- =====================================================
+-- 6. PRÉSENCES - COLLECTIVITÉ 3 (Tableaux 29 et 30)
+-- =====================================================
+
+-- Supprimer les anciennes présences pour act-6 avant d'insérer
+DELETE FROM activity_member_attendance WHERE activity_id = 'act-6';
+
+-- act-6: AG3 du 06/03/2026 (Tableau 29)
+INSERT INTO activity_member_attendance (id, activity_id, member_id, attendance_status) VALUES
+                                                                                           ('att-41', 'act-6', 'C3-M1', 'ATTENDED'),
+                                                                                           ('att-42', 'act-6', 'C3-M2', 'ATTENDED'),
+                                                                                           ('att-43', 'act-6', 'C3-M3', 'ATTENDED'),
+                                                                                           ('att-44', 'act-6', 'C3-M4', 'ATTENDED'),
+                                                                                           ('att-45', 'act-6', 'C3-M5', 'ATTENDED'),
+                                                                                           ('att-46', 'act-6', 'C3-M6', 'ATTENDED'),
+                                                                                           ('att-47', 'act-6', 'C3-M7', 'MISSING'),
+                                                                                           ('att-48', 'act-6', 'C3-M8', 'MISSING')
+ON CONFLICT (id) DO NOTHING;
+
+-- act-6: AG3 du 03/04/2026 (Tableau 30)
+INSERT INTO activity_member_attendance (id, activity_id, member_id, attendance_status) VALUES
+                                                                                           ('att-49', 'act-6', 'C3-M1', 'ATTENDED'),
+                                                                                           ('att-50', 'act-6', 'C3-M2', 'ATTENDED'),
+                                                                                           ('att-51', 'act-6', 'C3-M3', 'MISSING'),
+                                                                                           ('att-52', 'act-6', 'C3-M4', 'MISSING'),
+                                                                                           ('att-53', 'act-6', 'C3-M5', 'ATTENDED'),
+                                                                                           ('att-54', 'act-6', 'C3-M6', 'ATTENDED'),
+                                                                                           ('att-55', 'act-6', 'C3-M7', 'MISSING'),
+                                                                                           ('att-56', 'act-6', 'C3-M8', 'ATTENDED'),
+                                                                                           ('att-57', 'act-6', 'C1-M1', 'ATTENDED')
+ON CONFLICT (activity_id, member_id) DO UPDATE SET attendance_status = EXCLUDED.attendance_status;
+
+-- =====================================================
+-- 7. VÉRIFICATION FINALE
+-- =====================================================
+DO $$
+    DECLARE
+        activity_count INTEGER;
+        attendance_count INTEGER;
+    BEGIN
+        SELECT COUNT(*) INTO activity_count FROM activity;
+        SELECT COUNT(*) INTO attendance_count FROM activity_member_attendance;
+
+        RAISE NOTICE '=====================================================';
+        RAISE NOTICE 'DONNEES BONUS 1 INSERTEES AVEC SUCCES !';
+        RAISE NOTICE '=====================================================';
+        RAISE NOTICE 'Nombre d activites : %', activity_count;
+        RAISE NOTICE 'Nombre de presences : %', attendance_count;
+        RAISE NOTICE '=====================================================';
+    END $$;
