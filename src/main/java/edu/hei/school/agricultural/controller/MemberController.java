@@ -5,7 +5,9 @@ import edu.hei.school.agricultural.controller.mapper.MemberDtoMapper;
 import edu.hei.school.agricultural.entity.Member;
 import edu.hei.school.agricultural.exception.BadRequestException;
 import edu.hei.school.agricultural.exception.NotFoundException;
+import edu.hei.school.agricultural.security.ApiKeyValidator;
 import edu.hei.school.agricultural.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +25,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class MemberController {
     private final MemberService memberService;
     private final MemberDtoMapper memberDtoMapper;
+    private final ApiKeyValidator apiKeyValidator;
 
     @PostMapping("/members")
-    public ResponseEntity<?> createMembers(@RequestBody List<CreateMember> createMemberDtos) {
+    public ResponseEntity<?> createMembers(@RequestBody List<CreateMember> createMemberDtos, HttpServletRequest request) {
+//        apiKeyValidator.validate(request);
         try {
             List<Member> convertedCreateMembers = createMemberDtos.stream()
                     .map(memberDtoMapper::mapToEntity)
@@ -38,14 +42,11 @@ public class MemberController {
                             .map(memberDtoMapper::mapToDto)
                             .toList());
         } catch (BadRequestException e) {
-            return ResponseEntity.status(BAD_REQUEST)
-                    .body(e.getMessage());
+            return ResponseEntity.status(BAD_REQUEST).body(e.getMessage());
         } catch (NotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND)
-                    .body(e.getMessage());
+            return ResponseEntity.status(NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 }
