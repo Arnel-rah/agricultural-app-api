@@ -40,8 +40,8 @@ public class CollectivityRepository {
             for (Collectivity collectivity : collectivities) {
                 CollectivityStructure collectivityStructure = collectivity.getCollectivityStructure();
                 preparedStatement.setString(1, collectivity.getId());
-                preparedStatement.setString(2, collectivity.getName());
-                preparedStatement.setInt(3, collectivity.getNumber());
+                preparedStatement.setString(2, collectivity.getName() != null ? collectivity.getName() : "");
+                preparedStatement.setInt(3, collectivity.getNumber() != null ? collectivity.getNumber() : 0);
                 preparedStatement.setString(4, collectivity.getLocation());
                 preparedStatement.setString(5, collectivityStructure.getPresident().getId());
                 preparedStatement.setString(6, collectivityStructure.getVicePresident().getId());
