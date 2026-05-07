@@ -13,7 +13,7 @@ public class DataSource {
     @Bean
     public Connection getConnection() {
         try {
-            String jdbcURl = "jdbc:postgresql://localhost:5432/agricultural_fed_db";
+            String jdbcURl = "jdbc:postgresql://localhost:5432/agricole_db_api";
             String user = "postgres";
             String password = "Arnel012*/";
             return DriverManager.getConnection(jdbcURl, user, password);
